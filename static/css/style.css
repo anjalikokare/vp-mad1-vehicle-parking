@@ -1,0 +1,32 @@
+ body {
+        background-color: rgb(147, 208, 238);
+        color: black;
+      }
+      .form-container {
+        background-color: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.4);
+        max-width: 400px;
+        width: 380px;
+        max-height: 100%;
+        margin-top: 50px; 
+        
+      }
+      .form-control {
+        border-radius: 10px;
+        background-color: white;
+        height: 40px;
+      }
+      .form-label {
+        font-weight: bold;
+      }
+      .btn-custom {
+        background-color:rgb(188, 227, 128);
+        border-radius: 10px;
+      }
+      .btn-custom:hover {
+        background-color: rgb(244, 198, 239);
+      }
+
+
