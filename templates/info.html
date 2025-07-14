@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>User Booking</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  </head>
+  <body>
+
+<h2 class="text-center text-light mt-4">Book Your Parking Spot</h2>
+<p class="text-center text-secondary mb-3">Please select a spot and fill your parking details</p>
+
+<div class="container d-flex justify-content-center">
+  <div class="form-container my-5">
+    <h3 class="text-center mb-4">Booking Form</h3>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} text-center" role="alert">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="/booking">
+      
+      <div class="mb-3">
+          <label class="form-label">Spot Assign</label> 
+          <input type="text" class="form-control" value="{{ spot_name }}" readonly>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Lot ID</label>
+        <input type="text" class="form-control"  name = "lot_id" value="{{ lot.id }}" readonly>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">User ID</label>
+        <input type="text" class="form-control" name = "user_id" value="{{ session['user_id'] }}" readonly>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Vehicle Number</label>
+        <input type="text" class="form-control" placeholder="e.g. MH01AB1234" name="number" required>
+      </div>
+
+      <div class="d-flex justify-content-between">
+        <button type="submit" name="submit_booking" class="btn btn-custom" style="width: 150px;">Reserve</button>
+        <a href="/user_dashboard" class="btn btn-custom" style="width: 150px;">Cancel</a>
+      </div>
+
+    </form>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
