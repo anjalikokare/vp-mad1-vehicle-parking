@@ -21,54 +21,25 @@ def select_city_place():
     session['selected_place'] = place
     return redirect('/booking')
 
-@app.route('/admin/summary', methods=['GET', 'POST'])
-def admin_summary():
+@app.route('/user/summary', methods=['GET', 'POST'])
+def user_summary():
     lots = Parking_lot.query.all()
 
     lot_names = []
-    revenue = []
+    already_used_spots = []
     for lot in lots:
         lot_names.append(lot.prime_location_name)
-        reservations = Reservation.query.filter_by(lot_id=lot.id).all()
-        total_revenue = 0
-        for res in reservations:
-            if res.parking_cost:
-                total_revenue  += res.parking_cost
-        revenue.append(total_revenue)
-    
-   
-    plt.bar(lot_names, revenue,color='seagreen')
-    plt.xlabel('Parking Lots', fontsize=15)
-    plt.ylabel('Revenue', fontsize=15)
-    plt.title('Revenue For Each Parking Lot', fontsize=20)
-    plt.savefig('static/revenue_chart.png')
-    plt.close()
-
-    available_count = []
-    booked_count = []
-
-    for lot in lots:
-        available = Parking_spot.query.filter_by(lot_id=lot.id, status='Available').count()
-        available_count.append(available)
-        booked = Parking_spot.query.filter_by(lot_id=lot.id, status='Booked').count()
-        booked_count.append(booked)
-
-    plt.bar(lot_names, available_count, color='seagreen')
-    plt.xlabel('Parking Lots', fontsize=15)
-    plt.ylabel('Available Spots', fontsize=15)
-    plt.title('Available Spots For Each Parking Lot', fontsize=20)
-    plt.savefig('static/available_chart.png')
-    plt.close()
-
-    plt.bar(lot_names, booked_count, color='seagreen')
-    plt.xlabel('Parking Lots', fontsize=15)
-    plt.ylabel('Booked Spots', fontsize=15)
-    plt.title('Booked Spots For Each Parking Lot', fontsize=20)
-    plt.savefig('static/booked_chart.png')
-    plt.close()
-    return render_template('admin_summary.html',lots=lots, lot_names=lot_names, revenue=revenue
-                           ,available_count=available_count,booked_count=booked_count)
-
+        used_spots_count = Reservation.query.filter_by(lot_id=lot.id).count()
+        already_used_spots.append(used_spots_count)
+        if lot_names and already_used_spots and len(lot_names) == len(already_used_spots):
+            plt.bar(lot_names, already_used_spots,color='seagreen')
+            plt.xlabel('Parking Lots', fontsize=15)
+            plt.ylabel('already used spots', fontsize=15)
+            plt.title('Summary on Already Used Parking Spots', fontsize=20)
+            plt.savefig('static/used_spots_chart.png')
+            plt.close()
+    return render_template('user_summary.html',lots=lots, lot_names=lot_names,
+    already_used_spots=already_used_spots)
 
 @app.route('/release_spot/<int:reservation_id>', methods=['POST'])
 def release_spot(reservation_id):
@@ -92,15 +63,6 @@ def release_spot(reservation_id):
         flash("Parking spot not found.", "danger")
 
     return redirect('/user_dashboard')
-
-@app.route('/admin/admin_all_bookings')
-def all_bookings():
-    if 'admin_id' not in session:
-        flash("Only admin can access this page", "danger")
-        return redirect('/admin_login')
-
-    bookings = Reservation.query.order_by(Reservation.parking_timestamp.desc()).all()
-    return render_template('admin_all_booking.html', bookings=bookings)
 
 
 
