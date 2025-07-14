@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Spot Detail</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #d4edda;">
+    <div class="container-fluid">
+      <span class="text-danger fw-bold" style="font-size: 20px;">Welcome to Admin</span>
+      <div class="navbar-nav d-flex">
+        <a class="nav-link" href="/admin/dashboard">Home</a>
+        <a class="nav-link" href="/logout">Logout</a>
+      </div>
+    </div>
+  </nav>
+  <div class="container mt-5">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="card p-4 border-dark shadow">
+      <h4 class="text-center">Spot Details</h4>
+
+      <div class="mb-3">
+        <label><strong>Spot ID:</strong></label>
+        <input type="text" class="form-control" value="{{ selected_spot.id }}" readonly>
+      </div>
+
+      <div class="mb-3">
+        <label><strong>Status:</strong></label>
+        <input type="text" class="form-control" value="{{ 'Avl' if selected_spot.status == 'Available' else 'Occ' }}" readonly>
+      </div>
+
+      {% if selected_spot.status == 'Booked' and reservation %}
+      <hr>
+      <h6 class="text-primary">Occupied Spot Details</h6>
+
+      <div class="mb-2">
+        <label><strong>Customer ID:</strong></label>
+        <input type="text" class="form-control" value="{{ reservation.user_id }}" readonly>
+      </div>
+
+      <div class="mb-2">
+        <label><strong>Date/Time of Parking:</strong></label>
+        <input type="text" class="form-control" value="{{ reservation.parking_timestamp.strftime('%d/%m/%Y %H:%M') }}" readonly>
+      </div>
+
+      <div class="mb-2">
+        <label><strong>Estimated Cost:</strong></label>
+        <input type="text" class="form-control" value="₹ {{ reservation.parking_cost }}" readonly>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</body>
+</html>

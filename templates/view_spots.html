@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>View Parking Spots</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+   <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #d4edda;">
+    <div class="container-fluid">
+      <span class="text-danger fw-bold" style="font-size: 20px;">Welcome to Admin</span>
+      <div class="navbar-nav d-flex">
+        <a class="nav-link" href="/admin/dashboard">Home</a>
+        <a class="nav-link" href="/logout">Logout</a>
+      </div>
+    </div>
+  </nav>
+  <div class="container mt-4">
+    <h4 class="text-center mb-4">Parking Spots for {{ lot.prime_location_name }} - {{ lot.city }}</h4>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="row">
+      {% for spot in spots %}
+      <div class="col-4 mb-3">
+        <div class="border p-2 text-center" style="border: 2px solid">
+          <p><strong>ID:</strong> {{ spot.id }}</p>
+          <p><strong>Status:</strong> {{ 'Avl' if spot.status == 'Available' else 'Occ' }}</p>
+
+          <a href="{{ url_for('view_spot_details', spot_id=spot.id) }}" class="btn btn-sm btn-primary">View</a>
+
+          {% if spot.status == 'Available' %}
+          <form method="POST" action="{{ url_for('delete_spot', spot_id=spot.id) }}" style="margin-top: 5px;">
+            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+          </form>
+          {% else %}
+            <p class="text-danger style: bold">Occupied</p>
+          {% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</body>
+</html>

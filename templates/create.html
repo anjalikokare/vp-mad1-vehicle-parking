@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>New Parking Lot</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  </head>
+  <body>
+     <nav class="navbar navbar-expand-lg navbar-light bg-dark px-4">
+      <a class="navbar-brand fw-bold text-light" href="/">Parking System</a>
+      <div class="ms-auto">
+        <a class="btn btn-warning btn-sm" href="{{url_for('admin_dashboard')}}">Home Page</a>
+     </div>
+     </nav>
+    <div class="container d-flex justify-content-center align-items-center">
+      <div class="form-container my-5">
+        <h3 class="text-center mb-4 text-dark bg-warning p-2 rounded">Create Spot</h3>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }}" role="alert">
+                {{ message }}
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <form method="POST" action="/create">
+          <div class="mb-3">
+            <label for="place" class="form-label">Prime Location Name</label>
+            <select name="place" class="form-select" required>
+              <option value="Mall">Mall</option>
+              <option value="Ground">Ground</option>
+              <option value="Theatre">Theatre</option>
+              <option value="Auditorium">Auditorium</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="address" class="form-label">Address</label>
+            <textarea class="form-control" rows="3" name="address" id="address" required></textarea>
+          </div>
+
+          <div class="mb-3">
+            <label for="city" class="form-label">City</label>
+            <select name="city" class="form-select" id="city" required>
+              <option value="Nagpur">Nagpur</option>
+              <option value="Mumbai">Mumbai</option>
+              <option value="Pune">Pune</option>
+              <option value="Aurangabad">Aurangabad</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="pincode" class="form-label">Pin Code</label>
+            <input type="text" class="form-control" name="pincode" id="pincode" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="price" class="form-label">Price (per hour)</label>
+            <input type="number" class="form-control" name="price" id="price" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="max_spots" class="form-label">Maximum Spots</label>
+            <input type="number" class="form-control" name="max_spots" id="max_spots" required>
+          </div>
+          <div class="d-flex justify-content-between">
+            <button type="submit" name="submit" class="btn btn-custom" style="width: 150px;">Submit</button>
+            <button type="submit" name="cancel" class="btn btn-custom" style="width: 150px;">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+  </body>
+</html>
