@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #d4edda;">
+    <div class="container-fluid">
+      <div class="d-flex align-items-center">
+      <span class="text-danger fw-bold" style="font-size: 20px;">Welcome to Admin</span>
+      <div class="navbar-nav">
+        <a class="nav-link" href="/">Home</a>
+        <a class="nav-link" href="/admin/user">Users</a>
+        <a class="nav-link" href="/admin/summary">Summary</a>
+        <a class="nav-link" href="/admin/admin_all_bookings">All Bookings</a>
+        <a class="nav-link" href="/logout">Logout</a>
+      </div>
+    </div>
+  </div>
+  </nav>
+
+  <div class="container mt-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <h3 class="text-center mb-4">Parking Lots</h3>
+
+    <div class="row">
+      {% for lot in lots %}
+      <div class="col-md-6 mb-4">
+        <div class="card shadow">
+          <div class="card-header d-flex justify-content-between">
+            <strong>{{ lot.prime_location_name }} - {{ lot.city }}</strong>
+            <div>
+              <a href="{{ url_for('edit', lot_id=lot.id) }}" class="btn btn-sm btn-warning">Edit</a>
+              <form action="{{ url_for('delete_lot', lot_id=lot.id) }}" method="POST" style="display:inline;">
+                <button class="btn btn-sm btn-danger" type="submit">Delete</button>
+              </form>
+            </div>
+          </div>
+          <div class="card-body">
+          <p>Occupied: {{ lot.occupied }} / {{ lot.total }}</p>
+
+        <div class="d-flex flex-wrap">
+            {% for spot in lot.spots %}
+            <a href="{{ url_for('view_spots', lot_id=lot.id) }}"class="btn btn-sm 
+            {% if spot.status == 'Available' %}btn-success
+            {% else %}btn-danger
+            {% endif %} me-2">
+            {{ 'Avl' if spot.status == 'Available' else 'Occ' }}
+           </a>
+           {% endfor %}
+        </div>
+
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <div class="text-center">
+      <a href="{{ url_for('create_lot') }}" class="btn btn-outline-success mt-3">+ Add Lot</a>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
