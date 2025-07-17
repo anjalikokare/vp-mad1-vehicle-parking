@@ -33,8 +33,8 @@
         {% for booking in reservations %}
             <tr>
                 <td>{{ booking.id }}</td>
-                <td>{{ booking.spot.city }}</td>
-                <td>{{ booking.spot.place }}</td>
+                <td>{{ booking.city }}</td>
+                <td>{{ booking.place }}</td>
                 <td>{{ booking.vehicle_number }}</td>
                 <td>{{ booking.parking_timestamp.strftime('%Y-%m-%d %H:%M') }}</td>
                 <td>₹{{ booking.parking_cost }}</td>
