@@ -46,6 +46,8 @@ class Reservation(db.Model):
     leaving_timestamp = db.Column(db.DateTime)
     parking_cost = db.Column(db.Float)
     vehicle_number = db.Column(db.String(50))
+    city = db.Column(db.String(50))
+    place = db.Column(db.String(50))
     lot_id = db.Column(db.Integer, db.ForeignKey('parking_lot.id'), nullable=False)
     lot = db.relationship('Parking_lot', backref='reservations')
    
