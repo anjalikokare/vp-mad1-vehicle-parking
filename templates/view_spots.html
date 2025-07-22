@@ -30,18 +30,11 @@
       {% for spot in spots %}
       <div class="col-4 mb-3">
         <div class="border p-2 text-center" style="border: 2px solid">
-          <p><strong>ID:</strong> {{ spot.id }}</p>
+          <p><strong>ID:</strong>{{ loop.index }}</p>
           <p><strong>Status:</strong> {{ 'Avl' if spot.status == 'Available' else 'Occ' }}</p>
 
           <a href="{{ url_for('view_spot_details', spot_id=spot.id) }}" class="btn btn-sm btn-primary">View</a>
-
-          {% if spot.status == 'Available' %}
-          <form method="POST" action="{{ url_for('delete_spot', spot_id=spot.id) }}" style="margin-top: 5px;">
-            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-          </form>
-          {% else %}
-            <p class="text-danger style: bold">Occupied</p>
-          {% endif %}
+           
         </div>
       </div>
       {% endfor %}

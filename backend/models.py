@@ -45,10 +45,11 @@ class Reservation(db.Model):
     parking_timestamp = db.Column(db.DateTime, default=datetime.utcnow)
     leaving_timestamp = db.Column(db.DateTime)
     parking_cost = db.Column(db.Float)
+    city = db.Column(db.String(100)) 
+    place = db.Column(db.String(100))  
+    spot_name = db.Column(db.String(100))
     vehicle_number = db.Column(db.String(50))
-    city = db.Column(db.String(50))
-    place = db.Column(db.String(50))
-    lot_id = db.Column(db.Integer, db.ForeignKey('parking_lot.id'), nullable=False)
+    lot_id = db.Column(db.Integer, db.ForeignKey('parking_lot.id'))
     lot = db.relationship('Parking_lot', backref='reservations')
    
 
@@ -61,3 +62,4 @@ class Booking(db.Model):
     lot_id = db.Column(db.Integer)            
     user_id = db.Column(db.Integer)            
     vehicle_type = db.Column(db.String(20)) 
+

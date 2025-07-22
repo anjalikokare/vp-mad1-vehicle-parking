@@ -15,6 +15,7 @@
       </div>
     </div>
   </nav>
+
   <div class="container mt-5">
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
@@ -37,24 +38,31 @@
         <input type="text" class="form-control" value="{{ 'Avl' if selected_spot.status == 'Available' else 'Occ' }}" readonly>
       </div>
 
-      {% if selected_spot.status == 'Booked' and reservation %}
-      <hr>
-      <h6 class="text-primary">Occupied Spot Details</h6>
+      {% if reservation %}
+        <hr>
+        <h6 class="text-primary">Occupied Spot Details</h6>
 
-      <div class="mb-2">
-        <label><strong>Customer ID:</strong></label>
-        <input type="text" class="form-control" value="{{ reservation.user_id }}" readonly>
-      </div>
+        <div class="mb-2">
+          <label><strong>Customer ID:</strong></label>
+          <input type="text" class="form-control" value="{{ reservation.user_id }}" readonly>
+        </div>
 
-      <div class="mb-2">
-        <label><strong>Date/Time of Parking:</strong></label>
-        <input type="text" class="form-control" value="{{ reservation.parking_timestamp.strftime('%d/%m/%Y %H:%M') }}" readonly>
-      </div>
+        <div class="mb-2">
+          <label><strong>Date/Time of Parking:</strong></label>
+          <input type="text" class="form-control" value="{{ reservation.parking_timestamp.strftime('%d/%m/%Y %H:%M') }}" readonly>
+        </div>
 
-      <div class="mb-2">
-        <label><strong>Estimated Cost:</strong></label>
-        <input type="text" class="form-control" value="₹ {{ reservation.parking_cost }}" readonly>
-      </div>
+        {% if reservation.leaving_timestamp %}
+          <div class="mb-2">
+            <label><strong>Release Time:</strong></label>
+            <input type="text" class="form-control" value="{{ reservation.leaving_timestamp.strftime('%d/%m/%Y %H:%M') }}" readonly>
+          </div>
+        {% endif %}
+
+        <div class="mb-2">
+          <label><strong>{{ 'Estimated Cost'  }} Cost:</strong></label>
+          <input type="text" class="form-control" value="₹ {{ reservation.parking_cost }}" readonly>
+        </div>
       {% endif %}
     </div>
   </div>

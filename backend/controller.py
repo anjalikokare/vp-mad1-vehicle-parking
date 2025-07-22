@@ -5,11 +5,14 @@ from flask import current_app as app
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+import os
+
 
 
 @app.route('/')
 def home():
     return render_template('index.html')
+
 
 @app.route('/select_city_place', methods=['POST'])
 def select_city_place():
@@ -57,7 +60,10 @@ def booking():
             lot_id=lot.id,
             parking_timestamp=datetime.utcnow(),
             parking_cost=0.0,
-            vehicle_number=vehicle_number
+            vehicle_number=vehicle_number,
+            city=city,     
+            place=place,
+            spot_name=spot.spot_name
         )
         db.session.add(reservation)
 
@@ -75,6 +81,7 @@ def booking():
         spot_list=spot_list,
         spot_name=spot_name
     )
+
 
 @app.route('/release_spot/<int:reservation_id>', methods=['POST'])
 def release_spot(reservation_id):
@@ -98,6 +105,7 @@ def release_spot(reservation_id):
         flash("Parking spot not found.", "danger")
 
     return redirect('/user_dashboard')
+
 
 @app.route('/admin/dashboard', methods=['GET', 'POST'])
 def admin_dashboard():
@@ -143,6 +151,7 @@ def user_registration():
         db.session.commit()
         return redirect('/user_login')
     return render_template('user_registration.html')
+
 
 
 @app.route('/user_login', methods = ['GET','POST'])
@@ -243,6 +252,7 @@ def create_lot():
     return render_template('create.html')
 
 
+
 @app.route('/edit/<int:lot_id>', methods=['GET', 'POST'])
 def edit(lot_id):
     lot = Parking_lot.query.get(lot_id)
@@ -292,13 +302,14 @@ def edit(lot_id):
                 )
                 db.session.add(new_spot)
 
+
         elif new_count < old_count:
             extra = old_count - new_count
             for_removing = [s for s in old_spots if s.status == 'Available']
             if len(for_removing) < extra:
                 flash('Not enough available spots to remove.', 'danger')
             else:
-                for spot in for_removing[:extra]:
+                for spot in for_removing[extra:]:
                     db.session.delete(spot)
         db.session.commit()
         flash('Parking lot updated successfully.', 'success')
@@ -335,6 +346,7 @@ def logout():
     session.clear()
     return redirect('/')
 
+
 @app.route('/admin/admin_all_bookings')
 def all_bookings():
     if 'admin_id' not in session:
@@ -343,6 +355,7 @@ def all_bookings():
 
     bookings = Reservation.query.order_by(Reservation.parking_timestamp.desc()).all()
     return render_template('admin_all_booking.html', bookings=bookings)
+
 
 @app.route('/admin/view_spots/<int:lot_id>', methods=['GET', 'POST'])
 def view_spots(lot_id):
@@ -358,29 +371,6 @@ def view_spots(lot_id):
     spots = Parking_spot.query.filter_by(lot_id=lot.id).all()
     return render_template('view_spots.html', spots=spots, lot=lot)
 
-@app.route('/admin/delete_spot/<int:spot_id>', methods=['POST'])
-def delete_spot(spot_id):
-    if 'admin_id' not in session:
-        flash("Only admin can see this page", "danger")
-        return redirect('/admin_login')
-
-    spot = Parking_spot.query.get(spot_id)
-    if not spot:
-        flash("Spot not found", "danger")
-        return redirect('/admin/dashboard')
-
-    if spot.status == 'Booked':
-        flash("Cannot delete a booked spot", "warning")
-        return redirect(url_for('view_spots', lot_id=spot.lot_id))
-    
-    lot = Parking_lot.query.get(spot.lot_id)
-    lot.maximum_number_of_spots -= 1
-
-    db.session.delete(spot)
-    db.session.add(lot)
-    db.session.commit()
-    flash("Spot deleted successfully", "success")
-    return redirect(url_for('view_spots', lot_id=spot.lot_id))
 
 # i want to create view spot details page
 @app.route('/admin/view_spot_details/<int:spot_id>', methods=['GET', 'POST'])
@@ -406,6 +396,7 @@ def user():
 
     users = User.query.all()
     return render_template('user.html', users=users)
+
 
 @app.route('/user_dashboard', methods=['GET', 'POST'])
 def user_dashboard(): 
@@ -486,6 +477,7 @@ def admin_summary():
     return render_template('admin_summary.html',lots=lots, lot_names=lot_names, revenue=revenue
                            ,available_count=available_count,booked_count=booked_count)
 
+
 @app.route('/user/summary', methods=['GET', 'POST'])
 def user_summary():
     lots = Parking_lot.query.all()
@@ -505,5 +497,3 @@ def user_summary():
             plt.close()
     return render_template('user_summary.html',lots=lots, lot_names=lot_names,
     already_used_spots=already_used_spots)
-
-
